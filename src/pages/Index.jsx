@@ -1,23 +1,31 @@
-import { Box, Container, VStack, Text, Image, Heading, SimpleGrid, Link, Input } from "@chakra-ui/react";
+import { Box, Container, VStack, Text, Image, Heading, SimpleGrid, Link, Input, Select } from "@chakra-ui/react";
 import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 
 const products = [
-  { id: 1, name: "Smartphone", price: "$699", image: "/images/smartphone.jpg" },
-  { id: 2, name: "Laptop", price: "$999", image: "/images/laptop.jpg" },
-  { id: 3, name: "Headphones", price: "$199", image: "/images/headphones.jpg" },
+  { id: 1, name: "Smartphone", price: "$699", image: "/images/smartphone.jpg", category: "smartphones" },
+  { id: 2, name: "Laptop", price: "$999", image: "/images/laptop.jpg", category: "laptops" },
+  { id: 3, name: "Headphones", price: "$199", image: "/images/headphones.jpg", category: "headphones" },
 ];
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
   };
 
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
+  };
+
+  const filteredProducts = products.filter((product) => {
+    return (
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      (selectedCategory === "" || product.category === selectedCategory)
+    );
+  });
 
   return (
     <Container maxW="container.xl" p={4}>
@@ -35,6 +43,11 @@ const Index = () => {
           size="lg"
           mt={4}
         />
+        <Select placeholder="Filter by category" onChange={handleCategoryChange} size="lg" mt={4}>
+          <option value="smartphones">Smartphones</option>
+          <option value="laptops">Laptops</option>
+          <option value="headphones">Headphones</option>
+        </Select>
         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10} mt={8}>
           {filteredProducts.map((product) => (
             <Box key={product.id} borderWidth="1px" borderRadius="lg" overflow="hidden" p={4}>
